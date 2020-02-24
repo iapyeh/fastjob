@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package grpcstyle;
+
+message HelloRequest{
+    string greeting = 1;
+}
+
+message HelloReply{
+    string reply = 1;
+}

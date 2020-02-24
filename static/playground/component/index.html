@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+ 
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width'>
+
+	<title>Playground Components</title>
+
+
+    <meta charset="utf-8" />
+    <!--meta name = "Access-Control-Allow-Origin" value = "*" /-->
+    <meta name="viewport"
+        content="width=device-width,maximum-scale=10.0,initial-scale=1.0,user-scalable=1,minimum-scale=1.0" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Draw</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../fastjob/w2ui-1.5.rc1.min.css" />
+    <script src="../../../fastjob/jquery.3.3.1.min.js"></script>
+    <script src="../../../fastjob/lodash.4.17.10.min.js"></script>
+    <script src="../../../fastjob/w2ui-1.5.rc1.min.js"></script>
+    <script src="../../../fastjob/objshpb.js"></script>
+    <script src="../../../fastjob/sdk.js"></script>
+
+
+	<link rel='icon' type='image/png' href='/favicon.png'>
+	<link rel='stylesheet' href='global.css'>
+
+    <link rel='stylesheet' href='bundle.css'>
+	<script defer src='bundle.js'></script>
+
+
+    <link rel='stylesheet' href='playground.css'>
+	<script defer src='playground.js'></script>
+
+</head>
+<script>
+$(function(){
+    new app.Tree({
+        target:$('#app-playground')[0],
+        props:{
+            name:'-----------@@------------'
+        }
+    })
+    setTimeout(function(){
+       // app.setUsername('iap--iap')
+    },2000)
+})
+</script>
+<body>
+    <h1>Playground Components</h1>
+    <div id="app"></div>
+    <div id="app-playground"></div>
+    <div id="playground"></div>
+</body>
+</html>

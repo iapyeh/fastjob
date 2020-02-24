@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "../../../src/svelte/playground/src/Colortext.svelte",
+    "../../../src/svelte/playground/src/headpane.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n\timport marked from 'marked';\n\texport let name;\n\texport let colors = ['blue','red'];\n\tvar count = 0;\n\tvar change = () =>{\n\t\tcount += 1\n\t\tsetTimeout(change,1000)\n\t}\n\tsetTimeout(change,1000)\n\tlet value = \"this is a book\"\n</script>\n\n<style>\n\th1 {\n\t\tcolor: purple;\n\t}\n</style>\n\n<h1 style=\"color:{(count%2) === 1 ? colors[0] : colors[1]}\">Hello hi {name} {count%2}!</h1>\n<textarea bind:value={value} style=\"width:300px;height:50px\"></textarea>\n<!--\n-->\n{@html marked(value)}\n",
+    "<script>\nimport {getContext} from 'svelte';\nconst {namespace,user} = getContext('context')\n</script>\n<style>\n.headpane{\n    float:right;\n}\n</style>\n<div class=\"headpane\">\nWelcome {user.username}\n</div>\n"
+  ],
+  "names": [],
+  "mappings": "AAcC,EAAE,cAAC,CAAC,AACH,KAAK,CAAE,MAAM,AACd,CAAC;ACXF,wBAAS,CAAC,AACN,MAAM,KAAK,AACf,CAAC"
+}

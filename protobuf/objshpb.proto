@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+
+//
+// 轉給 Javascript使用的 objshpb.js的程序
+//      $protoc --js_out=import_style=commonjs,binary:.  objshpb.proto 
+//      $browserify objshpb_pb.js  -o objshpb.js
+// 在html當中載入
+//      <script type="text/javascript" src="objshpb.js"></script>
+/*
+    ws.onmessage = function(evt){
+        var binary = new Uint8Array(evt.data)
+        var pbAny = proto.google.protobuf.Any.deserializeBinary(binary)
+        var payload = proto.objshpb[pbAny.getTypeUrl()].deserializeBinary(pbAny.getValue())
+        var obj = {
+            id: payload.getId(),
+            retcode: payload.getRetcode(),
+            stdout:payload.getStdout(),
+            stderr:payload.getStderr()
+        }
+    }
+*/
+// for Golang
+// $protoc --go_out=. objshpb.proto
+// 把產生的 objshpb.pb.go複製到go的專案目錄中
+// 必要時，要改objshpb.pb.go當中的package 名稱
+
+package objsh;
+
+// 這一行一定要有，這樣Any才會被包到js當中
+// 不要管 protoc抱怨沒有用到(import ... but not used)
+import "google/protobuf/Any.proto";
+
+message Command{
+    // an identifier to retrieve result
+    int32 id = 1;
+    // identifier for server to execute
+    string name = 2;
+    // arguments in string style
+    // the command receiver should know how to interprete these values
+    repeated string args = 3;
+    map<string, string> kw = 4;
+    google.protobuf.Any message = 5;
+    //repeated google.protobuf.Any mesgArgs = 6;
+    //map<string,google.protobuf.Any> mesgKw = 7;
+    bool kill = 8;
+}
+message Result{
+    // id of Command of this result belongs to
+    // 0 if is an unsolited message from server (aka announcement)
+    int32 id = 1;
+    //retcode:
+    // 0 completed
+    // -1 this is not final result
+    // 1 ~ , error code
+    int32 retcode = 2; 
+    // JSON encodeding data
+    bytes stdout = 3;
+    // JSON encoded data
+    string stderr = 4;
+}

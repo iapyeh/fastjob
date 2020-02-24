@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>    
+    <!--
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
+    <script type="text/javascript" src="sdk.js"></script>
+    -->
+    
+    <!-- very unstable CDN, replace this in the future -->
+    <script src="https://kit.fontawesome.com/0cea9555d5.js"></script>
+
+    <script type="text/javascript" src="/objsh/file/jquery.3.3.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/objsh/file/w2ui-1.5.rc1.min.css" />
+    <script type="text/javascript" src="/objsh/file/w2ui-1.5.rc1.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+
+    <!-- Markdown to HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script type="text/javascript" src="/objsh/file/objshpb.js"></script>
+    <script type="text/javascript" src="/objsh/file/sdk.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="goplayground.css" />
+    <script type="text/javascript" src="goplayground.js"></script>
+<style>
+
+
+    </style>
+</head>
+<body style="margin:0;padding:0;font-size:16px">
+    <div style="padding:0px">
+        <div class="header"><span class="server_name"></span> <span class="fa fa-chevron-right">&nbsp;</span> API Development Playground <span style="float:right;margin-right:5px;font-size:16px">&nbsp;Welcome &nbsp;<span style="float:right;margin-right:10px" id="login-username"></span></span> </div>
+        <div id="loginform" class="w2ui-form" style="height:200px">
+            <div class="w2ui-page page-0" style="margin-top:20px">
+                <div class="w2ui-field w2ui-span8" style="clear: both">
+                    <label>Username:</label>
+                    <div>
+                        <input type="text" value="admin" name="username" id="username" placeholder="username" />
+                    </div>
+                </div>
+            
+                <div class="w2ui-field w2ui-span8" style="clear: both">
+                    <label>password:</label>
+                    <div>
+                        <input id="password" value="1234" name="password"  type="password"/>
+                    </div>
+                </div>
+
+                <div class="w2ui-field w2ui-span8" style="clear: both;text-align:center;color:red">
+                    <span id="login-message"></span>
+                </div>
+            </div>
+            <div class="w2ui-buttons" style="height:50px">
+                <button class="w2ui-btn" name="login">Login</button>
+            </div>
+        </div>
+        
+        <div id="connected_content" style="visibility:hidden">
+            <div id="toolbar" style=""></div>
+            <div id="layout" style=""></div>
+        </div>
+        <!--
+        <div id="result"></div>
+        -->
+    </div>
+    <div id="exports" style="display:none"></div>
+</body>
+</html>
