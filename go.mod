@@ -8,7 +8,7 @@ require (
 	github.com/dgrr/fastws v0.0.0-20190521184023-c7fa015aed13
 	github.com/golang/protobuf v1.3.2
 	github.com/google/uuid v1.1.1
-	github.com/iapyeh/go-python3 v0.0.0
+	github.com/iapyeh/go-python3 latest
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/valyala/fasthttp v1.5.0
 )
