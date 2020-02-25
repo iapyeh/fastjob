@@ -13,4 +13,4 @@ require (
 	github.com/valyala/fasthttp v1.5.0
 )
 
-replace github.com/iapyeh/go-python3 => ../go-python3
+//replace github.com/iapyeh/go-python3 => ../go-python3
