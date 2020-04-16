@@ -76,8 +76,12 @@ func (self *WebsocketCtx) Close() {
 	}
 	self.mutex.RUnlock()
 
+
 	// 在Server side先關閉時，要送這行讓自己聽訊息那裡能中斷跳出來（只有Close不會中斷跳出來）
-	self.Conn.SetDeadline(time.Now())
+    // 2020-04-16T03:41:09+00:00
+    //      dgrr 把這個函式拿掉了，先這樣看看
+	//self.Conn.SetDeadline(time.Now())
+
 	self.Conn.Close()
 	self.closeListener = nil
 	self.messageListener = nil
