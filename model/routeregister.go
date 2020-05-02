@@ -3,13 +3,14 @@ package model
 import (
 	"errors"
 	"fmt"
+    "sync"
 	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/buaazp/fasthttprouter"
+	//"github.com/buaazp/fasthttprouter"
+    "github.com/fasthttp/router"
 	"github.com/dgrr/fastws"
 
 	//model "github.com/iapyeh/fastjob/model"
@@ -24,14 +25,6 @@ import (
  C: 保護模式＝放cookie (uuid, token)，建立永久性物件，在記憶體中做cache
 使用者在指定每一個route時，需指定所要使用的模式。
 */
-//ACL mode
-/*
-const (
-	PublicMode  = model.PublicMode
-	TraceMode   = model.TraceMode
-	ProtectMode = model.ProtectMode
-)
-*/
 func LoginFailedDoRedirect(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.DelClientCookie(AuthTokenName)
 	ctx.Redirect("/", 307)
@@ -43,14 +36,18 @@ func LoginFailedResponseJson(ctx *fasthttp.RequestCtx) {
 }
 
 type RouteRegister struct {
-	Router  *fasthttprouter.Router
+	//Router  *fasthttprouter.Router
+    Router *router.Router
 	Handler func(*fasthttp.RequestCtx)
 	//fasthttproute does not have api to know if a path has been used 2019-06-31T07:25:21+00:00
 	RegisteredPaths []string
+    mutex       sync.Mutex
+    RunInMainQueue chan func()
 }
 
 func NewRouteRegister() *RouteRegister {
-	r := fasthttprouter.New()
+	//r := fasthttprouter.New()
+    r := router.New()
 	register := RouteRegister{
 		Router:          r,
 		Handler:         r.Handler,
@@ -75,37 +72,49 @@ func (routeRegister *RouteRegister) File(urlPath string, fsPath string, acl int)
 		log.Println("Warn: Double registering existing route: " + urlPath)
 		return
 	}
+    routeRegister.mutex.Lock()
+    
 	routeRegister.RegisteredPaths = append(routeRegister.RegisteredPaths, urlPath)
-
+    suffix := "{filepath:*}"
+    suffixLen := len(suffix)
 	if urlPath == "/" {
-		// 暫時這樣
-		// do nothing but enforce / not to be protected
 		// TODO: allow other acl mode
-		if acl == ProtectMode {
-			panic("Currently, root path / is enforced to be public accessible")
-		}
+		//if acl == ProtectMode {
+		//	panic("Currently, root path / is enforced to be public accessible")
+		//}
+		if acl != PublicMode {
+            log.Println("root route / is enforced to be public accessible")
+        }
 		acl = PublicMode
+        urlPath = "/" + suffix
 	} else if urlPath[len(urlPath)-1:] == "/" {
-		urlPath = urlPath + "*filepath"
+		urlPath = urlPath + suffix
 	} else {
-		urlPath = urlPath + "/*filepath"
+		urlPath = urlPath + "/" + suffix
 	}
 	switch acl {
 	case PublicMode:
+        /*
 		if urlPath == "/" {
-			routeRegister.Router.NotFound = fasthttp.FSHandler(fsPath, 0)
+            routeRegister.Router.ServeFiles("/{filepath:*}", fsPath)
+            log.Println("Register File /{filepath:*}")
 		} else {
+            log.Printf("** Register File %v\n",urlPath)
 			routeRegister.Router.ServeFiles(urlPath, fsPath)
-		}
+		}*/
+        log.Printf("** Register File %v\n",urlPath)
+        routeRegister.Router.ServeFiles(urlPath, fsPath)
 	case TraceMode:
-		prefix := urlPath[:len(urlPath)-10]
+        // prefix should not end with / , that's why -1
+		prefix := urlPath[:len(urlPath)- suffixLen - 1]
 		fileHandler := fasthttp.FSHandler(fsPath, strings.Count(prefix, "/"))
 		routeRegister.Router.Handle("GET", urlPath, func(ctx *fasthttp.RequestCtx) {
 			SetTraceCookie(ctx)
 			fileHandler(ctx)
 		})
 	case ProtectMode:
-		prefix := urlPath[:len(urlPath)-10]
+        // prefix should not end with / , that's why -1
+		prefix := urlPath[:len(urlPath)- suffixLen - 1]
 		fileHandler := fasthttp.FSHandler(fsPath, strings.Count(prefix, "/"))
 		routeRegister.Router.Handle("GET", urlPath, func(ctx *fasthttp.RequestCtx) {
 			user := AuthProvierSingleton.UserFromRequest(ctx)
@@ -117,6 +126,7 @@ func (routeRegister *RouteRegister) File(urlPath string, fsPath string, acl int)
 			fileHandler(ctx)
 		})
 	}
+    routeRegister.mutex.Unlock()
 }
 
 // Get register a http GET request handler

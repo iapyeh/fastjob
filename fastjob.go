@@ -1,14 +1,12 @@
-package objsh
+package fastjob
 
 import (
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
-
 	model "github.com/iapyeh/fastjob/model"
 	tree "github.com/iapyeh/fastjob/tree"
-	_ "github.com/valyala/fasthttp"
 )
 
 var Router = model.Router
@@ -113,3 +111,44 @@ var NormalizeUsername = model.NormalizeUsername
 //Utilities
 var SetTimeout = model.SetTimeout
 var SetInterval = model.SetInterval
+
+
+/*
+以下示範一個讓多個 func 可以依序在main thread被執行的方法
+
+// ----------- In main.go -----------
+
+var lastInitQueue = make(chan func(),100)
+func init() {
+    runtime.LockOSThread()
+}
+func main() {
+    
+    var lastInitCompleted = make(chan bool,1)
+    lastInitQueue <- func(){
+        initAccounts()
+        lastInitCompleted <- true
+    }
+    close(lastInitQueue)
+    loop:
+    for{
+        select {
+            case  <-lastInitCompleted :
+                break loop
+            case f := <- lastInitQueue:
+                f()
+        }
+    }
+    runtime.UnlockOSThread()   
+    StartServer()
+}
+
+// ----------- in other file -----------
+
+func init(){
+    lastInitQueue <- func(){
+        cwd, _ := os.Getwd()
+        fastjob.Router.File("/", filepath.Join(cwd, "static", "pub"), fastjob.PublicMode)
+    }
+}
+*/
