@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/dgrr/fastws v0.0.0-20200423111754-5ff45a96ebc0
-	//github.com/buaazp/fasthttprouter v0.1.1
 	github.com/fasthttp/router v1.0.3
 	github.com/golang/protobuf v1.4.0
 	github.com/google/uuid v1.1.1
