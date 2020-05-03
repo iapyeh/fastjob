@@ -30,7 +30,7 @@ package model
 
 import (
 	"errors"
-	fmt "fmt"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -756,7 +756,7 @@ func (self *TreeRoot) ScanAllAPIInfo() {
 		searchingPaths = append(searchingPaths, filepath.Join(gopath, "src"))
 	}
 	for _, spath := range searchingPaths {
-		fmt.Printf("searchingPath=%v\n", spath)
+		log.Printf("searchingPath=%v\n", spath)
 	}
 	uniqueSourcePaths := make(map[string][][2]string) // source file/folder to exported func
 	for bname, branch := range self.Branches {
@@ -787,9 +787,9 @@ func (self *TreeRoot) ScanAllAPIInfo() {
 			}
 		}
 		if srcpath == "" {
-			fmt.Println("Caution: source file not found for " + tp.PkgPath() + ".go")
+			log.Println("Caution: source file not found for " + tp.PkgPath() + ".go")
 		} else {
-			fmt.Println("Source file:" + srcpath)
+			log.Println("Source file:" + srcpath)
 			var funcs [][2]string
 			var ok bool
 			funcs, ok = uniqueSourcePaths[srcpath]

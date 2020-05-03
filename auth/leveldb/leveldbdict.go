@@ -215,7 +215,6 @@ func (self *DictAccountProvider) GetUser(username string) model.User {
 // GetUnitTestUser is for account manipulation in project
 func (self *DictAccountProvider) GetAppUser(username string) *AppUser {
     var user AppUser
-    fmt.Println("self.accountDict.=",self)
 	if err := self.accountDict.GetStringObject(username, &user); err == nil {
 		return &user
 	}
@@ -308,7 +307,6 @@ func NewDictUserManager(dbpath string) *DictUserManager {
 			AccountProvider,
 		),
 	}
-    fmt.Println("============>>",AccountProvider)
 	// BaseAuthProvider will auto starts a maintenance job,
 	// If you know what you are doing, you can stop it by calling:
 	//manager.StopMaintenance()

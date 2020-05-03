@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+    "os/signal"
 	"path/filepath"
+    "time"
 	model "github.com/iapyeh/fastjob/model"
 	tree "github.com/iapyeh/fastjob/tree"
+    "github.com/valyala/fasthttp"    
 )
 
 var Router = model.Router
 var LoginHandler = model.LoginHandler
 var LogoutHandler = model.LogoutHandler
-
+var RunInMain = model.RunInMain
 const (
 	ProtectMode = model.ProtectMode
 	PublicMode  = model.PublicMode
@@ -113,42 +116,61 @@ var SetTimeout = model.SetTimeout
 var SetInterval = model.SetInterval
 
 
-/*
-以下示範一個讓多個 func 可以依序在main thread被執行的方法
-
-// ----------- In main.go -----------
-
-var lastInitQueue = make(chan func(),100)
-func init() {
-    runtime.LockOSThread()
-}
-func main() {
+//StartServer is called for start server
+var Server *fasthttp.Server
+func StartServer(options map[string]interface{}) {
     
-    var lastInitCompleted = make(chan bool,1)
-    lastInitQueue <- func(){
-        initAccounts()
-        lastInitCompleted <- true
+
+    //var found bool  
+
+    var port = 8080
+	optPort, found := options["port"]
+    if found {
+        port = optPort.(int)
     }
-    close(lastInitQueue)
-    loop:
-    for{
-        select {
-            case  <-lastInitCompleted :
-                break loop
-            case f := <- lastInitQueue:
-                f()
-        }
-    }
-    runtime.UnlockOSThread()   
-    StartServer()
+
+	serverName := ""
+    optServerName, found := options["serverName"]
+    if found {serverName = optServerName.(string)}
+    
+    readTimeout := 0
+    optReadTimeout, found := options["readTimeout"]
+    if found {readTimeout = optReadTimeout.(int)}
+
+    maxRequestBodySize := 0
+    optMaxRequestBodySize, found := options["maxRequestBodySize"]
+    if found {maxRequestBodySize = optMaxRequestBodySize.(int)}
+
+	log.Printf("%v Listen on port %v  (fasthttp)\n", serverName, port)
+
+	Server = &fasthttp.Server{
+		Handler: Router.Handler,
+		Name: serverName,
+	}
+
+	//These two must be set before calling listen
+	if (readTimeout > 0) {
+        Server.ReadTimeout = time.Second * time.Duration(readTimeout)
+    } 
+	if (maxRequestBodySize > 0) {
+        Server.MaxRequestBodySize = maxRequestBodySize
+    } 
+
+	if err := Server.ListenAndServe(fmt.Sprintf(":%v", port)); err != nil {
+		log.Fatalf("Server error: %s", err)
+		//panic(fmt.Sprintf("Server error:%s", err))
+	}
+
+	sigCh := make(chan os.Signal)
+	signal.Notify(sigCh, os.Interrupt)
+	<-sigCh
+	signal.Stop(sigCh)
+	signal.Reset(os.Interrupt)
+	Server.Shutdown()
 }
 
-// ----------- in other file -----------
-
-func init(){
-    lastInitQueue <- func(){
-        cwd, _ := os.Getwd()
-        fastjob.Router.File("/", filepath.Join(cwd, "static", "pub"), fastjob.PublicMode)
-    }
+// A fastjob-based app, should call fastjob.Main() in their main()
+// to initialize the fastjob-relasted features
+func Main(){
+    model.CallRunInMain()
 }
-*/

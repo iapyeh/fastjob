@@ -25,7 +25,7 @@ syntax = "proto3";
 // 把產生的 objshpb.pb.go複製到go的專案目錄中
 // 必要時，要改objshpb.pb.go當中的package 名稱
 
-package objsh;
+package fastjob;
 
 // 這一行一定要有，這樣Any才會被包到js當中
 // 不要管 protoc抱怨沒有用到(import ... but not used)
