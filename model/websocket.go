@@ -74,6 +74,7 @@ func (self *WebsocketCtx) Close() {
     // 這裡有問題，有太多的close handler，存在記憶體中
 	for token, fn := range self.closeListener {
 		//log.Println("call close handler", token)
+        _ = token
 		fn()
 	}
 	self.mutex.RUnlock()
