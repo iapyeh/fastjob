@@ -16,7 +16,7 @@ func (self *DictAccountProvider) ListAllUsers() []*AppUser{
 
 func UserListHandler(ctx *model.RequestCtx){
     DictUserManagerSingleton.GetAccountProvider().ListAllUsers()
-    fmt.Fprint(ctx.Ctx,"fuck you")
+    fmt.Fprint(ctx.Ctx,"hi you")
 }
 
 func UseRouteWithPrefix(prefix string){

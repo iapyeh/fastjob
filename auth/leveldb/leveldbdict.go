@@ -53,7 +53,6 @@ GetStringObject usage example:
         return &user
     }
 */
-
 // GetStringObject 會用db裡面的資料initialize obj
 // 但如果沒有資料，會有 KeyNotFoundError
 func (self *LevelDbDict) GetStringObject(key string, obj interface{}) error {
@@ -79,9 +78,10 @@ func (self *LevelDbDict) SetString(key string, value []byte) error {
 
 /*
 SetStringObject usage example:
-	func (self *DrawUserTable) Put(u *DrawUser) error {
-		//self.Entries is an instance of LevelDbDict
-		return self.Entries.SetStringObject(u.Username, u)
+	func (self *DrawUserTable) Put(obj *DrawUser) error {
+		// self.Entries is an instance of LevelDbDict
+        // obj will be serialized by JSON
+		return self.Entries.SetStringObject(u.Username, obj)
 	}
 */
 func (self *LevelDbDict) SetStringObject(key string, obj interface{}) error {

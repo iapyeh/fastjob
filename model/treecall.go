@@ -333,6 +333,7 @@ func (p *Promise) DirectResult(result *Result) {
 	} else {
 		p.stateListener.SendProtobufMessage(result)
 	}
+    log.Println("directresult of length====>:",len(result.Stdout))
 	// 不必測試 "&& len(p.hookedStateListeners) > 0 ",
 	// 因為hookedStateListeners是動態建立起來的，如果hookedStateListeners是空，會被清掉
 	if p.hookedStateListeners != nil {
@@ -550,7 +551,7 @@ func (tcCtx *TreeCallCtx) Kill() {
 }
 
 //KillPeer kill other existing TreeCallCtx
-// usually, this kill is oriented from browser miso
+// usually, this kill is oriented from browser
 func (tcCtx *TreeCallCtx) KillPeer(cmdID int32) error {
 	// When WebSocket is closed, Kill() of all TreeCallCtx will be called.
 	// But if one of TreeCallCtx.Kill() is called, TreeCallCtx is not necessary Closed

@@ -122,6 +122,9 @@ type Avatar struct {
 
 	//for clean up
 	lastTS int64 `json:"-"` //in-memory cache only
+    
+    Metadata_ map[string]string
+
 }
 
 func (avatar *Avatar) Username() string {
@@ -165,14 +168,26 @@ func (avatar *Avatar) SetDisabled(v bool) {
 	avatar.Disabled_ = v
 }
 func (avatar *Avatar) SetMetadata(key string, value string) {
-
+    if avatar.Metadata_ == nil{
+        avatar.Metadata_ = make(map[string]string)
+    }
+    avatar.Metadata_[key] = value
 }
 func (avatar *Avatar) GetMetadata(key string) (string, bool) {
-	return "", true
+    if avatar.Metadata_ == nil{
+        return "", true
+    }
+    if value, ok := avatar.Metadata_[key]; ok{
+        return value, true
+    }else{
+        return "", false
+    }
 }
 func (avatar *Avatar) Metadata() map[string]string {
-	ret := make(map[string]string)
-	return ret
+    if avatar.Metadata_ == nil{
+        avatar.Metadata_ = make(map[string]string)
+    }
+	return avatar.Metadata_
 }
 
 /*
