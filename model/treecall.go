@@ -68,7 +68,7 @@ func (bank *TreeCallCtxBank) Put(tcCtx *TreeCallCtx) error {
 	bank.Mutex.Lock()
 	defer bank.Mutex.Unlock()
 	bank.storeByID[tcCtx.CmdID] = tcCtx
-    log.Println("put to bank",tcCtx.CmdID)
+    //log.Println("put to bank",tcCtx.CmdID)
     user := tcCtx.WsCtx.GetUser();
     if user != nil {
 		username := user.Username()
@@ -92,7 +92,7 @@ func (bank *TreeCallCtxBank) Get(CmdID int32) *TreeCallCtx {
     return nil
 }
 func (bank *TreeCallCtxBank) Del(CmdID int32) *TreeCallCtx {
-    fmt.Println("bank deleting",CmdID)
+    //fmt.Println("bank deleting",CmdID)
 	bank.Mutex.Lock()
     defer bank.Mutex.Unlock()
 	if tcCtx, ok := bank.storeByID[CmdID]; ok {
@@ -122,7 +122,7 @@ func (bank *TreeCallCtxBank) Del(CmdID int32) *TreeCallCtx {
 				}
 			}
 		}
-		log.Println("Bank after del size:", len(bank.storeByID), len(bank.storeByUser))
+		//log.Println("Bank after del size:", len(bank.storeByID), len(bank.storeByUser))
 		return tcCtx
 	}
 	return nil
@@ -333,7 +333,7 @@ func (p *Promise) DirectResult(result *Result) {
 	} else {
 		p.stateListener.SendProtobufMessage(result)
 	}
-    log.Println("directresult of length====>:",len(result.Stdout))
+    //log.Println("directresult of length====>:",len(result.Stdout))
 	// 不必測試 "&& len(p.hookedStateListeners) > 0 ",
 	// 因為hookedStateListeners是動態建立起來的，如果hookedStateListeners是空，會被清掉
 	if p.hookedStateListeners != nil {
