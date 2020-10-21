@@ -122,6 +122,11 @@ func StartServer(options map[string]interface{}) {
     
 
     //var found bool  
+    var bindIp = "0.0.0.0"
+	optBindIp, found := options["bind"]
+    if found {
+        bindIp = optBindIp.(string)
+    }
 
     var port = 8080
 	optPort, found := options["port"]
@@ -141,7 +146,7 @@ func StartServer(options map[string]interface{}) {
     optMaxRequestBodySize, found := options["maxRequestBodySize"]
     if found {maxRequestBodySize = optMaxRequestBodySize.(int)}
 
-	log.Printf("%v Listen on port %v  (fasthttp)\n", serverName, port)
+	log.Printf("%v Listen on %v:%v  (fasthttp)\n", serverName, bindIp,port)
 
 	Server = &fasthttp.Server{
 		Handler: Router.Handler,
@@ -156,7 +161,7 @@ func StartServer(options map[string]interface{}) {
         Server.MaxRequestBodySize = maxRequestBodySize
     } 
 
-	if err := Server.ListenAndServe(fmt.Sprintf(":%v", port)); err != nil {
+	if err := Server.ListenAndServe(fmt.Sprintf("%v:%v",bindIp, port)); err != nil {
 		log.Fatalf("Server error: %s", err)
 		//panic(fmt.Sprintf("Server error:%s", err))
 	}
